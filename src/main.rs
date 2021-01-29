@@ -7,12 +7,6 @@ use mdbook::preprocess::{PreprocessorContext, CmdPreprocessor};
 use mdbook::book::{Book, BookItem};
 
 #[derive(Debug,StructOpt)]
-enum Opt {
-    #[structopt(name="mdbook-preprocessor")]
-    MdBookPreprocessor(PlayScriptOpt),
-}
-
-#[derive(Debug,StructOpt)]
 struct PlayScriptOpt {
     #[structopt(subcommand)]
     command: Option<Command>,
@@ -26,28 +20,24 @@ enum Command {
 }
 
 fn main() {
-    let opt = Opt::from_args();
+    let opt = PlayScriptOpt::from_args();
 
     //eprintln!("{:#?}", opt);
 
     let preprocessor = PlayScriptPreprocessor::new();
 
-    match opt {
-        Opt::MdBookPreprocessor(opt) => {
-            let result = match opt.command {
-                Some(Command::Supports { renderer }) => {
-                    handle_renderer(preprocessor, &renderer)
-                },
-                _ => {
-                    handle_preprocessing(preprocessor)
-                },
-            };
-
-            if let Err(e) = result {
-                eprintln!("{}", e);
-                std::process::exit(1);
-            }
+    let result = match opt.command {
+        Some(Command::Supports { renderer }) => {
+            handle_renderer(preprocessor, &renderer)
         },
+        _ => {
+            handle_preprocessing(preprocessor)
+        },
+    };
+
+    if let Err(e) = result {
+        eprintln!("{}", e);
+        std::process::exit(1);
     }
 }
 
