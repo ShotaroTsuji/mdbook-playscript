@@ -1,8 +1,8 @@
 div.content > main {
 	margin: auto;
-	padding-left: 4rem;
-	padding-right: 2rem;
-	max-width: 48rem;
+	padding-left: 6em;
+	max-width: 38em;
+	font-family: serif;
 }
 
 p {
