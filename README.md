@@ -30,5 +30,5 @@ additional-css = ["mdplayscript.css"]
 
 The README of [mdplayscript](https://crates.io/crates/mdplayscript) explains basic notations.
 
-An example of a source of mdBook with `mdbook-playscript` is placed in (examples/figaro)[examples/figaro].
+An example of a source of mdBook with `mdbook-playscript` is placed in [examples/figaro](examples/figaro).
 The generated example is hosted on [github pages](https://shotarotsuji.github.io/mdbook-playscript/figaro/).
