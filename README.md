@@ -3,6 +3,8 @@
 A mdBook preprocessor for writing play scripts.
 The library crate for this preprocessor is [mdplayscript](https://crates.io/crates/mdplayscript).
 
+For Japanese users, there is [Japanese README](./README_ja.md).
+
 ## Install
 
 This preprocessor can be installed with cargo:
