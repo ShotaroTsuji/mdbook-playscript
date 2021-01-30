@@ -5,10 +5,10 @@ authors = ["Shotaro Tsuji <Shotaro.Tsuji@gmail.com>"]
 edition = "2018"
 license = "MIT"
 repository = "https://github.com/ShotaroTsuji/mdbook-playscript"
-description = "Preprocessor for mdBook"
+description = "Preprocessor for mdBook, which styles stage play scripts"
 readme = "README.md"
 categories = ["text-processing"]
-keywords = ["markdown", "pulldown-cmark", "play"]
+keywords = ["markdown", "pulldown-cmark", "stage", "play"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
