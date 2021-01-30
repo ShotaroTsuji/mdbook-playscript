@@ -67,10 +67,11 @@ additional-css = ["mdplayscript_ja.css"]
 ```
 
 記号`>`を含まない段落でも次のHTMLコメントを記述することで台詞としてフォーマットさせることができます。
+monologueという文字列が含まれますが、日本語戯曲では独白のみの場面であっても登場人物名を見出しに立てるようなので、この記法はト書きを独立させたいとき以外には使わないでしょう。
 
 ```
 <!-- playscript-monologue-begin -->
-独白
+(ト書き)
 <!-- playscript-monologue-end -->
 ```
 
