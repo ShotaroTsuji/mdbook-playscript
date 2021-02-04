@@ -5,11 +5,12 @@ div.content > main {
 	font-family: serif;
 }
 
-p {
+div.content > main p {
 	text-align: left;
 	hanging-punctuation: allow-end;
 	font-feature-settings: "palt" 0;
 	font-kerning: none;
+	line-height: 1.8;
 }
 
 div.content h1, h2, h3, h4 {
@@ -24,13 +25,8 @@ span.character + span.direction {
 	font-style: normal;
 }
 
-div.play h3 {
-	margin: 0;
-}
-
 div.speech {
 	text-indent: -2em;
-	line-height: 1.5;
 }
 
 div.speech > h5 {
@@ -121,7 +117,7 @@ div.content h1.cover-title {
 	text-align: center;
 }
 
-p.cover-author {
+div.authors p.cover-author {
 	text-align: center;
 	font-weight: bold;
 	font-size: 1.5em;
