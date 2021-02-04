@@ -8,6 +8,8 @@ div.content > main {
 p {
 	text-align: left;
 	hanging-punctuation: allow-end;
+	font-feature-settings: "palt" 0;
+	font-kerning: none;
 }
 
 div.content h1, h2, h3, h4 {
