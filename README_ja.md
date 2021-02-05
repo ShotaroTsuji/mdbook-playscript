@@ -77,6 +77,10 @@ monologueという文字列が含まれますが、日本語戯曲では独白�
 
 ### その他の記法
 
+`<!-- playscript-off -->`で`mdplayscript`による変換をしないように指示できます。
+
+`<!-- playscript-on -->`で`mdplayscript`による変換を行うように指示できます。
+
 `<!-- playscript-title -->`で`book.toml`に記述したタイトルを出力できます。
 
 `<!-- playscript-authors -->`で`book.toml`に記述したタイトルを出力できます。
