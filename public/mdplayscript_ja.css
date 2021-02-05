@@ -1,6 +1,7 @@
-div.content > main {
-	margin: auto;
-	padding-left: 3em;
+div.content > main > * {
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 2em;
 	max-width: 38em;
 	font-family: serif;
 }
@@ -14,8 +15,8 @@ div.content > main p {
 	line-height: 1.8;
 }
 
-div.content h1, h2, h3, h4 {
-	padding-left: 4rem;
+div.content > main > h1, h2, h3, h4 {
+	padding-left: 12rem !important;
 }
 
 span.character {
