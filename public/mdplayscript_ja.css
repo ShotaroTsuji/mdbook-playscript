@@ -43,7 +43,14 @@ div.speech > h5 span.character {
 	text-transform: none;
 	font-family: sans-serif;
 	font-weight: bold;
+	/*
+	font-weight: 500;
+	*/
 	font-variant-caps: small-caps;
+}
+
+_::-webkit-full-page-media, _:future, :root div.speech > h5 span.character {
+	font-weight: 500;
 }
 
 div.speech > h5 span.direction {
