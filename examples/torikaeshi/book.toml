@@ -10,3 +10,4 @@ command = "../../target/debug/mdbook-playscript"
 
 [output.html]
 additional-css = ["mdplayscript_ja.css"]
+search.enable = false
