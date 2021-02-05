@@ -1,9 +1,9 @@
 [package]
 name = "mdbook-playscript"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Shotaro Tsuji <Shotaro.Tsuji@gmail.com>"]
 edition = "2018"
-license = "MIT"
+license = "MPL-2.0"
 repository = "https://github.com/ShotaroTsuji/mdbook-playscript"
 description = "Preprocessor for mdBook, which styles stage play scripts"
 readme = "README.md"
