@@ -5,13 +5,17 @@ div.content > main {
 	font-family: serif;
 }
 
-p {
+div.content > main p {
 	text-align: left;
+	text-indent: 1em;
 	hanging-punctuation: allow-end;
+	font-feature-settings: "palt" 0;
+	font-kerning: none;
+	line-height: 1.8;
 }
 
 div.content h1, h2, h3, h4 {
-	padding-left: 2em;
+	padding-left: 4rem;
 }
 
 span.character {
@@ -22,13 +26,8 @@ span.character + span.direction {
 	font-style: normal;
 }
 
-div.play h3 {
-	margin: 0;
-}
-
 div.speech {
 	text-indent: -2em;
-	line-height: 1.5;
 }
 
 div.speech > h5 {
@@ -45,10 +44,15 @@ div.speech > h5 span.character {
 	text-transform: none;
 	font-family: sans-serif;
 	font-weight: bold;
+	/*
+	font-weight: 500;
+	*/
 	font-variant-caps: small-caps;
 }
 
-div.speech > h5 span.direction {
+/* CSS hack for Safari */
+_::-webkit-full-page-media, _:future, :root div.speech > h5 span.character {
+	font-weight: 500;
 }
 
 div.speech > p {
@@ -79,9 +83,6 @@ div.speech > p > span.direction::after {
 	content: "）";
 }
 
-div.speech > p > span.direction:last-child {
-}
-
 div.characters {
 	margin-left: 2em;
 }
@@ -90,23 +91,11 @@ div.characters div.speech {
 	margin-bottom: 0em;
 }
 
-div.characters div.speech h5 {
-}
-
 div.characters div.speech h5:only-child {
 	text-transform: none;
 	font-family: sans-serif;
 	font-weight: normal;
 	font-variant-caps: small-caps;
-}
-
-div.characters div.speech::after {
-}
-
-div.characters h5::after {
-}
-
-div.characters h5 + p::before {
 }
 
 div.characters p {
@@ -119,7 +108,8 @@ div.content h1.cover-title {
 	text-align: center;
 }
 
-p.cover-author {
+div.authors p.cover-author {
+	text-indent: 0;
 	text-align: center;
 	font-weight: bold;
 	font-size: 1.5em;
