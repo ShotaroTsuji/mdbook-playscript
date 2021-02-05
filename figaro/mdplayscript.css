@@ -1,6 +1,5 @@
 div.content > main {
 	margin: auto;
-	padding-left: 6em;
 	max-width: 38em;
 	font-family: serif;
 }
@@ -21,10 +20,6 @@ span.character {
 
 span.character + span.direction {
 	font-style: italic;
-}
-
-div.play h3 {
-	margin: 0;
 }
 
 div.speech {
