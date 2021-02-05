@@ -1,7 +1,6 @@
-div.content > main > * {
+div.content main {
 	margin-left: auto;
 	margin-right: auto;
-	padding-left: 2em;
 	max-width: 38em;
 	font-family: serif;
 }
@@ -16,7 +15,7 @@ div.content > main p {
 }
 
 div.content > main > h1, h2, h3, h4 {
-	padding-left: 12rem !important;
+	text-indent: 6rem;
 }
 
 span.character {
@@ -28,6 +27,7 @@ span.character + span.direction {
 }
 
 div.speech {
+	padding-left: 2em;
 	text-indent: -2em;
 }
 
@@ -104,9 +104,9 @@ div.characters p {
 }
 
 div.content h1.cover-title {
-	padding: 0;
-	padding-left: 0;
-	text-align: center;
+	text-indent: 0;
+	padding: 0 !important;
+	text-align: center !important;
 }
 
 div.authors p.cover-author {
