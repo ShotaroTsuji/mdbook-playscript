@@ -1,10 +1,4 @@
-<!-- playscript-title -->
-
-<p class="cover-conjunction">ou</p>
-
-<!-- playscript-subtitle -->
-
-<!-- playscript-authors -->
+<!-- playscript-make-title -->
 
 COMÉDIE EN CINQ ACTES ET EN PROSE
 
