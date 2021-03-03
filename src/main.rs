@@ -20,6 +20,10 @@ enum Command {
 }
 
 fn main() {
+    env_logger::Builder::new()
+        .filter_level(log::LevelFilter::Info)
+        .init();
+
     let opt = PlayScriptOpt::from_args();
 
     //eprintln!("{:#?}", opt);
@@ -82,6 +86,11 @@ impl PlayScriptPreprocessor {
             Some(lang) if lang == "ja" => Options::default_ja(),
             _ => Options::default(),
         };
+
+        let title_conj = ctx.config.get("preprocessor.playscript.title-conjunction")
+            .and_then(|v| v.as_str())
+            .map(|s| s.to_owned());
+        log::info!("title-conjunction: {:?}", title_conj);
 
         let params = Params {
             title: ctx.config.book.title.clone(),

@@ -7,6 +7,7 @@ title = "La Folle Journée"
 
 [preprocessor.playscript]
 command = "../../target/debug/mdbook-playscript"
+title-conjunction = "ou"
 subtitle = "Le Mariage de Figaro"
 
 [output.html]
