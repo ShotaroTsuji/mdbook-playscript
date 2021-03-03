@@ -92,10 +92,6 @@ impl PlayScriptPreprocessor {
         };
         //eprintln!("{:?}", opt);
 
-        let builder = MdPlayScriptBuilder::new()
-            .params(params)
-            .options(options);
-
         book.for_each_mut(|book_item| {
             match book_item {
                 BookItem::Chapter(chapter) => {
@@ -103,7 +99,10 @@ impl PlayScriptPreprocessor {
                     let mut content = String::new();
                     std::mem::swap(&mut chapter.content, &mut content);
 
-                    let parser = builder.clone().build(Parser::new(&content));
+                    let parser = MdPlayScriptBuilder::new()
+                        .params(params.clone())
+                        .options(options.clone())
+                        .build(Parser::new(&content));
                     let mut processed = String::with_capacity(len + len/2);
                     cmark(parser, &mut processed, None).unwrap();
                     //eprintln!("{}", processed);

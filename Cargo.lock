@@ -833,7 +833,7 @@ dependencies = [
 
 [[package]]
 name = "mdbook-playscript"
-version = "0.3.0"
+version = "0.3.2"
 dependencies = [
  "mdbook",
  "mdplayscript",
@@ -846,9 +846,9 @@ dependencies = [
 
 [[package]]
 name = "mdplayscript"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a00a3707faa1493ca0f1926263552bdc12ddbc2ce68dda94abdea45544ba27f"
+checksum = "17e25e376b353eae5354ac9e2ede957bf664bc3fbf9e7c862ac6aa46ea53d367"
 dependencies = [
  "eyre",
  "mdbook",
