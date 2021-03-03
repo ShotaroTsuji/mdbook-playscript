@@ -87,11 +87,6 @@ impl PlayScriptPreprocessor {
             _ => Options::default(),
         };
 
-        let title_conj = ctx.config.get("preprocessor.playscript.title-conjunction")
-            .and_then(|v| v.as_str())
-            .map(|s| s.to_owned());
-        log::info!("title-conjunction: {:?}", title_conj);
-
         let params = Params {
             title: ctx.config.book.title.clone(),
             subtitle: ctx.config.get("preprocessor.playscript.subtitle")
@@ -99,11 +94,16 @@ impl PlayScriptPreprocessor {
                 .map(|s| s.to_owned()),
             authors: ctx.config.book.authors.clone(),
         };
-        //eprintln!("{:?}", opt);
+
+        let title_conj = ctx.config.get("preprocessor.playscript.title-conjunction")
+            .and_then(|v| v.as_str())
+            .map(|s| s.to_owned());
+        log::info!("title-conjunction: {:?}", title_conj);
 
         book.for_each_mut(|book_item| {
             match book_item {
                 BookItem::Chapter(chapter) => {
+                    let title_conj = title_conj.clone();
                     let len = chapter.content.len();
                     let mut content = String::new();
                     std::mem::swap(&mut chapter.content, &mut content);
@@ -111,6 +111,7 @@ impl PlayScriptPreprocessor {
                     let parser = MdPlayScriptBuilder::new()
                         .params(params.clone())
                         .options(options.clone())
+                        .make_title(Box::new(move |params| make_title_fn(params, title_conj.as_ref())))
                         .build(Parser::new(&content));
                     let mut processed = String::with_capacity(len + len/2);
                     cmark(parser, &mut processed, None).unwrap();
@@ -123,6 +124,34 @@ impl PlayScriptPreprocessor {
 
         Ok(book)
     }
+}
+
+fn make_title_fn(params: &Params, conj: Option<&String>) -> String {
+    let mut cover = "<div class=\"cover\">".to_owned();
+    if let Some(title) = params.title.as_ref() {
+        cover += &format!("<h1 class=\"cover-title\">{}</h1>", title);
+    }
+
+    if let Some(subtitle) = params.subtitle.as_ref() {
+        if let Some(conj) = conj.as_ref() {
+            cover += &format!("<p class=\"cover-conjunction\">{}</p>", conj);
+        }
+        cover += &format!("<p class=\"cover-subtitle\">{}</p>", subtitle);
+    }
+
+    if !params.authors.is_empty() {
+        cover += "<div class=\"cover-authors\">";
+
+        for author in params.authors.iter() {
+            cover += &format!("<p class=\"cover-author\">{}</p>", author);
+        }
+
+        cover += "</div>";
+    }
+
+    cover += "</div>";
+
+    cover
 }
 
 #[derive(RustEmbed)]
