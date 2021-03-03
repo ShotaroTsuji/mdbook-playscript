@@ -126,9 +126,12 @@ h1.cover-title {
 	text-transform: uppercase;
 }
 
-h2.cover-title {
+p.cover-subtitle {
 	text-align: center;
 	text-transform: uppercase;
+	font-size: 1.75em;
+	font-style: normal;
+	font-weight: bold;
 	margin-top: 0;
 }
 
