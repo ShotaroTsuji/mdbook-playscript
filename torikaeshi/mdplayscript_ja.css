@@ -103,13 +103,13 @@ div.characters p {
 	display: inline;
 }
 
-div.content h1.cover-title {
+div.content div.cover h1.cover-title {
 	text-indent: 0;
 	padding: 0 !important;
 	text-align: center !important;
 }
 
-div.authors p.cover-author {
+div.content div.cover-authors p.cover-author {
 	text-indent: 0;
 	text-align: center;
 	font-weight: bold;
