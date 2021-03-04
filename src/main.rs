@@ -100,6 +100,11 @@ impl PlayScriptPreprocessor {
             .map(|s| s.to_owned());
         log::info!("title-conjunction: {:?}", title_conj);
 
+        let enable_ruby = ctx.config.get("preprocessor.playscript.japanese-ruby.enable")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        log::info!("japanese-ruby.enable: {}", enable_ruby);
+
         book.for_each_mut(|book_item| {
             match book_item {
                 BookItem::Chapter(chapter) => {
