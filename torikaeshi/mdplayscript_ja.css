@@ -1,4 +1,8 @@
-div.content main {
+body {
+	font-size: max(2rem, 1.8vw);
+}
+
+.content main {
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 38em;
@@ -11,7 +15,7 @@ div.content > main p {
 	hanging-punctuation: allow-end;
 	font-feature-settings: "palt" 0;
 	font-kerning: none;
-	line-height: 1.8;
+	line-height: 1.9;
 }
 
 div.content > main > h1, h2, h3, h4 {
@@ -33,9 +37,9 @@ div.speech {
 
 div.speech > h5 {
 	display: inline;
+	font-size: 1em;
 	font-style: normal;
 	font-weight: normal;
-	font-size: medium;
 	text-align: center;
 	padding-right: 1em;
 	margin: 0;
