@@ -196,6 +196,11 @@ impl Stylesheet {
 
         path.push(self.filename);
 
+        if !cfg!(debug_assertions) && path.exists() {
+            log::info!("CSS file already exists");
+            return;
+        }
+
         //eprintln!("copy to {:?}", path);
         let css = Asset::get(self.filename).unwrap();
         std::fs::write(&path, &css).unwrap();
