@@ -7,6 +7,7 @@ title = "取返し物語"
 
 [preprocessor.playscript]
 command = "../../target/debug/mdbook-playscript"
+japanese-ruby.enable = true
 
 [output.html]
 additional-css = ["mdplayscript_ja.css"]

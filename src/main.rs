@@ -1,8 +1,9 @@
 use structopt::StructOpt;
 use rust_embed::RustEmbed;
-use pulldown_cmark::Parser;
+use pulldown_cmark::{Parser, Event};
 use pulldown_cmark_to_cmark::cmark;
 use mdplayscript::interface::*;
+use japanese_ruby_filter::pulldown_cmark_filter::RubyFilter;
 use mdbook::preprocess::{PreprocessorContext, CmdPreprocessor};
 use mdbook::book::{Book, BookItem};
 
@@ -100,6 +101,11 @@ impl PlayScriptPreprocessor {
             .map(|s| s.to_owned());
         log::info!("title-conjunction: {:?}", title_conj);
 
+        let enable_ruby = ctx.config.get("preprocessor.playscript.japanese-ruby.enable")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        log::info!("japanese-ruby.enable: {}", enable_ruby);
+
         book.for_each_mut(|book_item| {
             match book_item {
                 BookItem::Chapter(chapter) => {
@@ -108,14 +114,22 @@ impl PlayScriptPreprocessor {
                     let mut content = String::new();
                     std::mem::swap(&mut chapter.content, &mut content);
 
+                    let parser: Box<dyn Iterator<Item=Event<'_>>> = if enable_ruby {
+                        Box::new(RubyFilter::new(Parser::new(&content)))
+                    } else {
+                        Box::new(Parser::new(&content))
+                    };
+
                     let parser = MdPlayScriptBuilder::new()
                         .params(params.clone())
                         .options(options.clone())
                         .make_title(Box::new(move |params| make_title_fn(params, title_conj.as_ref())))
-                        .build(Parser::new(&content));
+                        .build(parser);
+
                     let mut processed = String::with_capacity(len + len/2);
                     cmark(parser, &mut processed, None).unwrap();
                     //eprintln!("{}", processed);
+
                     std::mem::swap(&mut chapter.content, &mut processed);
                 },
                 _ => {},
