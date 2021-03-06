@@ -22,6 +22,8 @@ cargo install mdbook-playscript
 また、`output.html.additional-css`の値を`mdplayscript_ja.css`にする必要があります。
 プリプロセッサがコンフィグを書き換えることはできないので手動で設定しなければなりません。
 
+`book.toml`に`preprocessor.playscript.japanese-ruby.enable: true`を設定することで日本語のテキストにルビを振ることができます。ルビの記法は[`japanese-ruby-filter`のREADME](https://crates.io/crates/japanese-ruby-filter)を参照してください。
+
 ```toml
 [book]
 authors = ["（著者の名前）"]
@@ -32,6 +34,7 @@ title = "（作品のタイトル）"
 
 [preprocessor.playscript]
 command = "mdbook-playscript"
+japanese-ruby.enable = true
 
 [output.html]
 additional-css = ["mdplayscript_ja.css"]
@@ -81,9 +84,11 @@ monologueという文字列が含まれますが、日本語戯曲では独白�
 
 `<!-- playscript-on -->`で`mdplayscript`による変換を行うように指示できます。
 
+`<!-- playscript-make-title -->`でタイトルと著者を出力できます。
+
 `<!-- playscript-title -->`で`book.toml`に記述したタイトルを出力できます。
 
-`<!-- playscript-authors -->`で`book.toml`に記述したタイトルを出力できます。
+`<!-- playscript-authors -->`で`book.toml`に記述した著者を出力できます。
 
 ## 実例
 
