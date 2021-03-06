@@ -241,7 +241,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "44533bbbb3bb3c1fa17d9f2e4e38bbbaf8396ba82193c4cb1b6445d711445d36"
 dependencies = [
  "atty",
- "humantime",
+ "humantime 1.3.0",
+ "log",
+ "regex",
+ "termcolor",
+]
+
+[[package]]
+name = "env_logger"
+version = "0.8.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "17392a012ea30ef05a610aa97dfb49496e71c9f676b27879922ea5bdf60d9d3f"
+dependencies = [
+ "atty",
+ "humantime 2.1.0",
  "log",
  "regex",
  "termcolor",
@@ -621,6 +634,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "humantime"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
+
+[[package]]
 name = "hyper"
 version = "0.13.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -714,6 +733,16 @@ name = "itoa"
 version = "0.4.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd25036021b0de88a0aff6b850051563c6516d0bf53f8638938edbb9de732736"
+
+[[package]]
+name = "japanese-ruby-filter"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1768a647773b6d6de875ee789a3534c1d254b7fe549435e48dda117f4398f316"
+dependencies = [
+ "pulldown-cmark 0.8.0",
+ "thiserror",
+]
 
 [[package]]
 name = "kernel32-sys"
@@ -810,7 +839,7 @@ dependencies = [
  "chrono",
  "clap",
  "elasticlunr-rs",
- "env_logger",
+ "env_logger 0.7.1",
  "futures-util",
  "gitignore",
  "handlebars",
@@ -835,6 +864,9 @@ dependencies = [
 name = "mdbook-playscript"
 version = "0.3.2"
 dependencies = [
+ "env_logger 0.8.3",
+ "japanese-ruby-filter",
+ "log",
  "mdbook",
  "mdplayscript",
  "pulldown-cmark 0.8.0",
@@ -846,9 +878,9 @@ dependencies = [
 
 [[package]]
 name = "mdplayscript"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a00a3707faa1493ca0f1926263552bdc12ddbc2ce68dda94abdea45544ba27f"
+checksum = "17e25e376b353eae5354ac9e2ede957bf664bc3fbf9e7c862ac6aa46ea53d367"
 dependencies = [
  "eyre",
  "mdbook",
@@ -1681,6 +1713,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
 dependencies = [
  "unicode-width",
+]
+
+[[package]]
+name = "thiserror"
+version = "1.0.24"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0f4a65597094d4483ddaed134f409b2cb7c1beccf25201a9f73c719254fa98e"
+dependencies = [
+ "thiserror-impl",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "1.0.24"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7765189610d8241a44529806d6fd1f2e0a08734313a35d5b3a556f92b381f3c0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]

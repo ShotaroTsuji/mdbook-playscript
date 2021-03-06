@@ -1,8 +1,9 @@
 use structopt::StructOpt;
 use rust_embed::RustEmbed;
-use pulldown_cmark::Parser;
+use pulldown_cmark::{Parser, Event};
 use pulldown_cmark_to_cmark::cmark;
 use mdplayscript::interface::*;
+use japanese_ruby_filter::pulldown_cmark_filter::RubyFilter;
 use mdbook::preprocess::{PreprocessorContext, CmdPreprocessor};
 use mdbook::book::{Book, BookItem};
 
@@ -20,6 +21,10 @@ enum Command {
 }
 
 fn main() {
+    env_logger::Builder::new()
+        .filter_level(log::LevelFilter::Info)
+        .init();
+
     let opt = PlayScriptOpt::from_args();
 
     //eprintln!("{:#?}", opt);
@@ -90,23 +95,41 @@ impl PlayScriptPreprocessor {
                 .map(|s| s.to_owned()),
             authors: ctx.config.book.authors.clone(),
         };
-        //eprintln!("{:?}", opt);
 
-        let builder = MdPlayScriptBuilder::new()
-            .params(params)
-            .options(options);
+        let title_conj = ctx.config.get("preprocessor.playscript.title-conjunction")
+            .and_then(|v| v.as_str())
+            .map(|s| s.to_owned());
+        log::info!("title-conjunction: {:?}", title_conj);
+
+        let enable_ruby = ctx.config.get("preprocessor.playscript.japanese-ruby.enable")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        log::info!("japanese-ruby.enable: {}", enable_ruby);
 
         book.for_each_mut(|book_item| {
             match book_item {
                 BookItem::Chapter(chapter) => {
+                    let title_conj = title_conj.clone();
                     let len = chapter.content.len();
                     let mut content = String::new();
                     std::mem::swap(&mut chapter.content, &mut content);
 
-                    let parser = builder.clone().build(Parser::new(&content));
+                    let parser: Box<dyn Iterator<Item=Event<'_>>> = if enable_ruby {
+                        Box::new(RubyFilter::new(Parser::new(&content)))
+                    } else {
+                        Box::new(Parser::new(&content))
+                    };
+
+                    let parser = MdPlayScriptBuilder::new()
+                        .params(params.clone())
+                        .options(options.clone())
+                        .make_title(Box::new(move |params| make_title_fn(params, title_conj.as_ref())))
+                        .build(parser);
+
                     let mut processed = String::with_capacity(len + len/2);
                     cmark(parser, &mut processed, None).unwrap();
                     //eprintln!("{}", processed);
+
                     std::mem::swap(&mut chapter.content, &mut processed);
                 },
                 _ => {},
@@ -115,6 +138,34 @@ impl PlayScriptPreprocessor {
 
         Ok(book)
     }
+}
+
+fn make_title_fn(params: &Params, conj: Option<&String>) -> String {
+    let mut cover = "<div class=\"cover\">".to_owned();
+    if let Some(title) = params.title.as_ref() {
+        cover += &format!("<h1 class=\"cover-title\">{}</h1>", title);
+    }
+
+    if let Some(subtitle) = params.subtitle.as_ref() {
+        if let Some(conj) = conj.as_ref() {
+            cover += &format!("<p class=\"cover-conjunction\">{}</p>", conj);
+        }
+        cover += &format!("<p class=\"cover-subtitle\">{}</p>", subtitle);
+    }
+
+    if !params.authors.is_empty() {
+        cover += "<div class=\"cover-authors\">";
+
+        for author in params.authors.iter() {
+            cover += &format!("<p class=\"cover-author\">{}</p>", author);
+        }
+
+        cover += "</div>";
+    }
+
+    cover += "</div>";
+
+    cover
 }
 
 #[derive(RustEmbed)]
@@ -144,6 +195,11 @@ impl Stylesheet {
         assert!(path.exists(), "root directory does not exist");
 
         path.push(self.filename);
+
+        if !cfg!(debug_assertions) && path.exists() {
+            log::info!("CSS file already exists");
+            return;
+        }
 
         //eprintln!("copy to {:?}", path);
         let css = Asset::get(self.filename).unwrap();
