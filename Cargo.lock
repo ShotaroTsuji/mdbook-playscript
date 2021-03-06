@@ -740,6 +740,7 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1768a647773b6d6de875ee789a3534c1d254b7fe549435e48dda117f4398f316"
 dependencies = [
+ "pulldown-cmark 0.8.0",
  "thiserror",
 ]
 
