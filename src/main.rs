@@ -27,8 +27,6 @@ fn main() {
 
     let opt = PlayScriptOpt::from_args();
 
-    //eprintln!("{:#?}", opt);
-
     let preprocessor = PlayScriptPreprocessor::new();
 
     let result = match opt.command {
@@ -128,7 +126,6 @@ impl PlayScriptPreprocessor {
 
                     let mut processed = String::with_capacity(len + len/2);
                     cmark(parser, &mut processed, None).unwrap();
-                    //eprintln!("{}", processed);
 
                     std::mem::swap(&mut chapter.content, &mut processed);
                 },
@@ -141,23 +138,23 @@ impl PlayScriptPreprocessor {
 }
 
 fn make_title_fn(params: &Params, conj: Option<&String>) -> String {
-    let mut cover = "<div class=\"cover\">".to_owned();
+    let mut cover = r#"<div class="cover">"#.to_owned();
     if let Some(title) = params.title.as_ref() {
-        cover += &format!("<h1 class=\"cover-title\">{}</h1>", title);
+        cover += &format!(r#"<h1 class="cover-title">{}</h1>"#, title);
     }
 
     if let Some(subtitle) = params.subtitle.as_ref() {
         if let Some(conj) = conj.as_ref() {
-            cover += &format!("<p class=\"cover-conjunction\">{}</p>", conj);
+            cover += &format!(r#"<p class="cover-conjunction">{}</p>"#, conj);
         }
-        cover += &format!("<p class=\"cover-subtitle\">{}</p>", subtitle);
+        cover += &format!(r#"<p class="cover-subtitle">{}</p>"#, subtitle);
     }
 
     if !params.authors.is_empty() {
-        cover += "<div class=\"cover-authors\">";
+        cover += r#"<div class="cover-authors">"#;
 
         for author in params.authors.iter() {
-            cover += &format!("<p class=\"cover-author\">{}</p>", author);
+            cover += &format!(r#"<p class="cover-author">{}</p>"#, author);
         }
 
         cover += "</div>";
