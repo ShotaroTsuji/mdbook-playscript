@@ -118,14 +118,14 @@ impl PlayScriptPreprocessor {
                         Box::new(Parser::new(&content))
                     };
 
-                    let parser = MdPlayScriptBuilder::new()
+                    let mut parser = MdPlayScriptBuilder::new()
                         .params(params.clone())
                         .options(options.clone())
                         .make_title(Box::new(move |params| make_title_fn(params, title_conj.as_ref())))
                         .build(parser);
 
                     let mut processed = String::with_capacity(len + len/2);
-                    cmark(parser, &mut processed, None).unwrap();
+                    cmark(&mut parser, &mut processed, None).unwrap();
 
                     std::mem::swap(&mut chapter.content, &mut processed);
                 },
