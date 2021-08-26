@@ -81,6 +81,9 @@ impl PlayScriptPreprocessor {
         let css = Stylesheet::from_context(ctx);
         css.copy(ctx);
 
+        let count_script = CountScript::from_context(ctx);
+        count_script.copy(ctx);
+
         let options = match ctx.config.book.language.as_ref() {
             Some(lang) if lang == "ja" => Options::default_ja(),
             _ => Options::default(),
@@ -171,6 +174,27 @@ fn make_title_fn(params: &Params, conj: Option<&String>) -> String {
 #[folder = "$CARGO_MANIFEST_DIR/public"]
 struct Asset;
 
+trait AdditionalFile {
+    fn filename(&self) -> &str;
+
+    fn copy(&self, ctx: &PreprocessorContext) {
+        let mut path = ctx.root.clone();
+        assert!(path.exists(), "root directory does not exist");
+
+        let filename = self.filename();
+
+        path.push(filename);
+
+        if !cfg!(debug_assertions) && path.exists() {
+            log::info!("Additional file already exists: {}", filename);
+            return;
+        }
+
+        let file = Asset::get(filename).unwrap();
+        std::fs::write(&path, &file).unwrap();
+    }
+}
+
 struct Stylesheet {
     filename: &'static str,
 }
@@ -188,20 +212,26 @@ impl Stylesheet {
             filename: filename,
         }
     }
+}
 
-    fn copy(&self, ctx: &PreprocessorContext) {
-        let mut path = ctx.root.clone();
-        assert!(path.exists(), "root directory does not exist");
+impl AdditionalFile for Stylesheet {
+    fn filename(&self) -> &str {
+        &self.filename
+    }
+}
 
-        path.push(self.filename);
+struct CountScript;
 
-        if !cfg!(debug_assertions) && path.exists() {
-            log::info!("CSS file already exists");
-            return;
-        }
+impl CountScript {
+    fn from_context(ctx: &PreprocessorContext) -> Self {
+        assert_eq!(ctx.renderer.as_str(), "html");
 
-        //eprintln!("copy to {:?}", path);
-        let css = Asset::get(self.filename).unwrap();
-        std::fs::write(&path, &css).unwrap();
+        Self
+    }
+}
+
+impl AdditionalFile for CountScript {
+    fn filename(&self) -> &str {
+        "playscript-count.js"
     }
 }

@@ -11,4 +11,5 @@ japanese-ruby.enable = true
 
 [output.html]
 additional-css = ["mdplayscript_ja.css"]
+additional-js = ["playscript-count.js"]
 search.enable = false

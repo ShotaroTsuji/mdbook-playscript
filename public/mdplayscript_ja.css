@@ -116,3 +116,9 @@ div.content div.cover-authors p.cover-author {
 	font-weight: bold;
 	font-size: 1.5em;
 }
+
+div#playscript-count {
+	margin-top: 0.8em;
+	text-align: right;
+	font-style: italic;
+}
