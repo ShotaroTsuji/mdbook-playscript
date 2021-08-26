@@ -127,6 +127,8 @@ impl PlayScriptPreprocessor {
                     let mut processed = String::with_capacity(len + len/2);
                     cmark(&mut parser, &mut processed, None).unwrap();
 
+                    processed.push_str(r#"<div id="playscript-count"></div>"#);
+
                     std::mem::swap(&mut chapter.content, &mut processed);
                 },
                 _ => {},
