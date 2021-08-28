@@ -107,6 +107,11 @@ impl PlayScriptPreprocessor {
             .unwrap_or(false);
         log::info!("japanese-ruby.enable: {}", enable_ruby);
 
+        let enable_counting = ctx.config.get("preprocessor.playscript.counting.enable")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        log::info!("counting.enable: {}", enable_counting);
+
         book.for_each_mut(|book_item| {
             match book_item {
                 BookItem::Chapter(chapter) => {
@@ -130,7 +135,9 @@ impl PlayScriptPreprocessor {
                     let mut processed = String::with_capacity(len + len/2);
                     cmark(&mut parser, &mut processed, None).unwrap();
 
-                    processed.push_str(r#"<div class="mdplayscript-count"></div>"#);
+                    if enable_counting {
+                        handle_counting_function(ctx, &mut processed);
+                    }
 
                     std::mem::swap(&mut chapter.content, &mut processed);
                 },
@@ -140,6 +147,10 @@ impl PlayScriptPreprocessor {
 
         Ok(book)
     }
+}
+
+fn handle_counting_function(ctx: &PreprocessorContext, s: &mut String) {
+    s.push_str(r#"<div class="mdplayscript-count"></div>"#);
 }
 
 fn make_title_fn(params: &Params, conj: Option<&String>) -> String {
