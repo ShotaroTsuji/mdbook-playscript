@@ -57,24 +57,28 @@ function countCharsInRuby(ruby) {
 	return count;
 }
 
-const holder = document.getElementById('playscript-count');
+const holders = document.querySelectorAll('div#playscript-count');
 
-const script = document.querySelectorAll('div.speech');
+const holder = holders.item(holders.length - 1);
 
-let characters = 0;
-let lines = 0;
+if ( holder ) {
+	const script = document.querySelectorAll('div.speech');
 
-for ( speech of script ) {
-	const p = stripSpeech(speech);
+	let characters = 0;
+	let lines = 0;
 
-	characters += countCharacters(p);
+	for ( speech of script ) {
+		const p = stripSpeech(speech);
 
-	const pHeight = p.offsetHeight;
+		characters += countCharacters(p);
 
-	const style = window.getComputedStyle(p);
-	const lineHeight = parseFloat(style.getPropertyValue('line-height'));
+		const pHeight = p.offsetHeight;
 
-	lines += Math.ceil(pHeight / lineHeight);
+		const style = window.getComputedStyle(p);
+		const lineHeight = parseFloat(style.getPropertyValue('line-height'));
+
+		lines += Math.ceil(pHeight / lineHeight);
+	}
+
+	holder.innerText = lines + '行, ' + characters + '字';
 }
-
-holder.innerText = lines + '行, ' + characters + '字';
