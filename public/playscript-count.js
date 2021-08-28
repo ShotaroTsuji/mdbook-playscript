@@ -57,7 +57,7 @@ function countCharsInRuby(ruby) {
 	return count;
 }
 
-const holders = document.querySelectorAll('div#playscript-count');
+const holders = document.querySelectorAll('div.mdplayscript-count');
 
 const holder = holders.item(holders.length - 1);
 
