@@ -1,3 +1,18 @@
+// Line and character counting function
+//
+//
+// ## 入力データ
+//
+// <div class="speech">
+//   <h5 id="D0">...</h5>
+//   <p>...</p>
+// </div>
+//
+// `div.speech > p`の中にはテキストあるいはト書きのspan要素が入っている。
+// これらの文字数を行数を数える。このとき、ruby要素に関してはルビは無視する。
+// 行数は行の高さでp要素の高さを割って切り上げる。
+// 一番上の行は行の高さいっぱいまで使わない。
+//
 /// Returns the inner paragraph of `div.speech`
 function stripSpeech(sp) {
 	const p = sp.querySelector('p');
