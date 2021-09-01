@@ -87,12 +87,12 @@ impl Counter {
 
     pub fn insert_elements(&self, ignored: &IgnorePatterns, src: Option<&PathBuf>, s: &mut String) {
         if let Some(src) = src {
-            log::info!("src = {}", src.display());
-
             if ignored.matches_path(src) {
-                log::info!("ignore this file");
+                log::info!("Ignore {}",src.display());
                 return;
             }
+
+            log::info!("Process {}", src.display());
         }
 
         s.push_str(&format!(r#"<div class="mdplayscript-count {}"></div>"#, self.class));
