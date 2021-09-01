@@ -86,9 +86,9 @@ impl PlayScriptPreprocessor {
         let count_script = CountScript::from_context(ctx);
         count_script.copy(ctx);
 
-        let options = match ctx.config.book.language.as_ref() {
-            Some(lang) if lang == "ja" => Options::default_ja(),
-            _ => Options::default(),
+        let (options, is_japanese) = match ctx.config.book.language.as_ref() {
+            Some(lang) if lang == "ja" => (Options::default_ja(), true),
+            _ => (Options::default(), false),
         };
 
         let params = Params {
@@ -111,7 +111,8 @@ impl PlayScriptPreprocessor {
 
         let enable_counting = ctx.config.get("preprocessor.playscript.counting.enable")
             .and_then(|v| v.as_bool())
-            .unwrap_or(false);
+            .unwrap_or(false)
+            && is_japanese;
         log::info!("counting.enable: {}", enable_counting);
 
         let mut counter_factory = CounterFactory::new("scene");

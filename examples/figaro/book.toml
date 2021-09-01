@@ -9,6 +9,7 @@ title = "La Folle Journée"
 command = "../../target/debug/mdbook-playscript"
 title-conjunction = "ou"
 subtitle = "Le Mariage de Figaro"
+counting.enable = true # this option must be ignored
 
 [output.html]
 additional-css = ["mdplayscript.css"]
