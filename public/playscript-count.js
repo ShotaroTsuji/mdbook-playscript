@@ -57,28 +57,72 @@ function countCharsInRuby(ruby) {
 	return count;
 }
 
-const holders = document.querySelectorAll('div.mdplayscript-count');
+/// Gets a class name starts with `scene`
+function getSceneClassName(elem) {
+	for ( className of elem.classList.values() ) {
+		if ( className.startsWith('scene') ) {
+			return className;
+		}
+	}
+}
 
-const holder = holders.item(holders.length - 1);
-
-if ( holder ) {
+function countCharactersInSpeeches(holderMap) {
 	const script = document.querySelectorAll('div.speech');
+
+	const lineCountMap = new Map();
+	const charCountMap = new Map();
 
 	let characters = 0;
 	let lines = 0;
 
 	for ( speech of script ) {
+		const sceneName = getSceneClassName(speech);
 		const p = stripSpeech(speech);
 
-		characters += countCharacters(p);
+		const pChars = countCharacters(p);
+
+		if ( charCountMap.has(sceneName) ) {
+			const chars = charCountMap.get(sceneName);
+			charCountMap.set(sceneName, chars + pChars);
+		} else {
+			charCountMap.set(sceneName, pChars);
+		}
 
 		const pHeight = p.offsetHeight;
 
 		const style = window.getComputedStyle(p);
 		const lineHeight = parseFloat(style.getPropertyValue('line-height'));
 
-		lines += Math.ceil(pHeight / lineHeight);
+		const pLines = Math.ceil(pHeight / lineHeight);
+
+		if ( lineCountMap.has(sceneName) ) {
+			const lines = lineCountMap.get(sceneName);
+			lineCountMap.set(sceneName, lines + pLines);
+		} else {
+			lineCountMap.set(sceneName, pLines);
+		}
 	}
 
-	holder.innerText = lines + '行, ' + characters + '字';
+	for ( pair of holderMap.entries() ) {
+		const lines = lineCountMap.get(pair[0]);
+		const characters = charCountMap.get(pair[0]);
+		pair[1].innerText = lines + '行, ' + characters + '字';
+	}
 }
+
+const holders = document.getElementsByClassName('mdplayscript-count');
+
+// a mapping from scene class name to place holder element
+const holderMap = new Map();
+
+for ( holder of holders ) {
+	for ( className of holder.classList.values() ) {
+		if ( className.startsWith('scene') ) {
+			holderMap.set(className, holder);
+		}
+	}
+}
+
+console.log(holderMap);
+
+countCharactersInSpeeches(holderMap);

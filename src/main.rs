@@ -1,4 +1,3 @@
-use std::path::{Path, PathBuf};
 use structopt::StructOpt;
 use rust_embed::RustEmbed;
 use pulldown_cmark::{Parser, Event};
