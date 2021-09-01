@@ -1,3 +1,4 @@
+use std::path::{Path, PathBuf};
 use structopt::StructOpt;
 use rust_embed::RustEmbed;
 use pulldown_cmark::{Parser, Event};
@@ -6,6 +7,8 @@ use mdplayscript::interface::*;
 use japanese_ruby_filter::pulldown_cmark_filter::RubyFilter;
 use mdbook::preprocess::{PreprocessorContext, CmdPreprocessor};
 use mdbook::book::{Book, BookItem};
+
+use mdbook_playscript::counter::{IgnorePatterns, CounterFactory};
 
 #[derive(Debug,StructOpt)]
 struct PlayScriptOpt {
@@ -112,6 +115,16 @@ impl PlayScriptPreprocessor {
             .unwrap_or(false);
         log::info!("counting.enable: {}", enable_counting);
 
+        let mut counter_factory = CounterFactory::new("scene");
+
+        let ignored = ctx.config.get("preprocessor.playscript.counting.ignore")
+            .and_then(|v| v.as_array());
+        let ignored = if let Some(v) = ignored {
+            IgnorePatterns::from_toml_values(v)
+        } else {
+            IgnorePatterns::new()
+        };
+
         book.for_each_mut(|book_item| {
             match book_item {
                 BookItem::Chapter(chapter) => {
@@ -132,11 +145,17 @@ impl PlayScriptPreprocessor {
                         .make_title(Box::new(move |params| make_title_fn(params, title_conj.as_ref())))
                         .build(parser);
 
+                    let counter = counter_factory.issue();
+
+                    if enable_counting {
+                        counter.set_class_to_renderer(parser.renderer_mut());
+                    }
+
                     let mut processed = String::with_capacity(len + len/2);
                     cmark(&mut parser, &mut processed, None).unwrap();
 
                     if enable_counting {
-                        handle_counting_function(ctx, &mut processed);
+                        counter.insert_elements(&ignored, chapter.source_path.as_ref(), &mut processed);
                     }
 
                     std::mem::swap(&mut chapter.content, &mut processed);
@@ -147,10 +166,6 @@ impl PlayScriptPreprocessor {
 
         Ok(book)
     }
-}
-
-fn handle_counting_function(ctx: &PreprocessorContext, s: &mut String) {
-    s.push_str(r#"<div class="mdplayscript-count"></div>"#);
 }
 
 fn make_title_fn(params: &Params, conj: Option<&String>) -> String {

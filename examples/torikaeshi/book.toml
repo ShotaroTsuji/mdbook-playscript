@@ -9,6 +9,7 @@ title = "取返し物語"
 command = "../../target/debug/mdbook-playscript"
 japanese-ruby.enable = true
 counting.enable = true
+counting.ignore = ["cover.md", "preface.md"]
 
 [output.html]
 additional-css = ["mdplayscript_ja.css"]
