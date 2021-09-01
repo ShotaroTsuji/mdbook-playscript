@@ -7,6 +7,8 @@ use japanese_ruby_filter::pulldown_cmark_filter::RubyFilter;
 use mdbook::preprocess::{PreprocessorContext, CmdPreprocessor};
 use mdbook::book::{Book, BookItem};
 
+use mdbook_playscript::counter::{IgnorePatterns, CounterFactory};
+
 #[derive(Debug,StructOpt)]
 struct PlayScriptOpt {
     #[structopt(subcommand)]
@@ -26,8 +28,6 @@ fn main() {
         .init();
 
     let opt = PlayScriptOpt::from_args();
-
-    //eprintln!("{:#?}", opt);
 
     let preprocessor = PlayScriptPreprocessor::new();
 
@@ -83,9 +83,12 @@ impl PlayScriptPreprocessor {
         let css = Stylesheet::from_context(ctx);
         css.copy(ctx);
 
-        let options = match ctx.config.book.language.as_ref() {
-            Some(lang) if lang == "ja" => Options::default_ja(),
-            _ => Options::default(),
+        let count_script = CountScript::from_context(ctx);
+        count_script.copy(ctx);
+
+        let (options, is_japanese) = match ctx.config.book.language.as_ref() {
+            Some(lang) if lang == "ja" => (Options::default_ja(), true),
+            _ => (Options::default(), false),
         };
 
         let params = Params {
@@ -106,6 +109,22 @@ impl PlayScriptPreprocessor {
             .unwrap_or(false);
         log::info!("japanese-ruby.enable: {}", enable_ruby);
 
+        let enable_counting = ctx.config.get("preprocessor.playscript.counting.enable")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false)
+            && is_japanese;
+        log::info!("counting.enable: {}", enable_counting);
+
+        let mut counter_factory = CounterFactory::new("scene");
+
+        let ignored = ctx.config.get("preprocessor.playscript.counting.ignore")
+            .and_then(|v| v.as_array());
+        let ignored = if let Some(v) = ignored {
+            IgnorePatterns::from_toml_values(v)
+        } else {
+            IgnorePatterns::new()
+        };
+
         book.for_each_mut(|book_item| {
             match book_item {
                 BookItem::Chapter(chapter) => {
@@ -120,15 +139,24 @@ impl PlayScriptPreprocessor {
                         Box::new(Parser::new(&content))
                     };
 
-                    let parser = MdPlayScriptBuilder::new()
+                    let mut parser = MdPlayScriptBuilder::new()
                         .params(params.clone())
                         .options(options.clone())
                         .make_title(Box::new(move |params| make_title_fn(params, title_conj.as_ref())))
                         .build(parser);
 
+                    let counter = counter_factory.issue();
+
+                    if enable_counting {
+                        counter.set_class_to_renderer(parser.renderer_mut());
+                    }
+
                     let mut processed = String::with_capacity(len + len/2);
-                    cmark(parser, &mut processed, None).unwrap();
-                    //eprintln!("{}", processed);
+                    cmark(&mut parser, &mut processed, None).unwrap();
+
+                    if enable_counting {
+                        counter.insert_elements(&ignored, chapter.source_path.as_ref(), &mut processed);
+                    }
 
                     std::mem::swap(&mut chapter.content, &mut processed);
                 },
@@ -141,23 +169,23 @@ impl PlayScriptPreprocessor {
 }
 
 fn make_title_fn(params: &Params, conj: Option<&String>) -> String {
-    let mut cover = "<div class=\"cover\">".to_owned();
+    let mut cover = r#"<div class="cover">"#.to_owned();
     if let Some(title) = params.title.as_ref() {
-        cover += &format!("<h1 class=\"cover-title\">{}</h1>", title);
+        cover += &format!(r#"<h1 class="cover-title">{}</h1>"#, title);
     }
 
     if let Some(subtitle) = params.subtitle.as_ref() {
         if let Some(conj) = conj.as_ref() {
-            cover += &format!("<p class=\"cover-conjunction\">{}</p>", conj);
+            cover += &format!(r#"<p class="cover-conjunction">{}</p>"#, conj);
         }
-        cover += &format!("<p class=\"cover-subtitle\">{}</p>", subtitle);
+        cover += &format!(r#"<p class="cover-subtitle">{}</p>"#, subtitle);
     }
 
     if !params.authors.is_empty() {
-        cover += "<div class=\"cover-authors\">";
+        cover += r#"<div class="cover-authors">"#;
 
         for author in params.authors.iter() {
-            cover += &format!("<p class=\"cover-author\">{}</p>", author);
+            cover += &format!(r#"<p class="cover-author">{}</p>"#, author);
         }
 
         cover += "</div>";
@@ -171,6 +199,27 @@ fn make_title_fn(params: &Params, conj: Option<&String>) -> String {
 #[derive(RustEmbed)]
 #[folder = "$CARGO_MANIFEST_DIR/public"]
 struct Asset;
+
+trait AdditionalFile {
+    fn filename(&self) -> &str;
+
+    fn copy(&self, ctx: &PreprocessorContext) {
+        let mut path = ctx.root.clone();
+        assert!(path.exists(), "root directory does not exist");
+
+        let filename = self.filename();
+
+        path.push(filename);
+
+        if !cfg!(debug_assertions) && path.exists() {
+            log::info!("Additional file already exists: {}", filename);
+            return;
+        }
+
+        let file = Asset::get(filename).unwrap();
+        std::fs::write(&path, &file).unwrap();
+    }
+}
 
 struct Stylesheet {
     filename: &'static str,
@@ -189,20 +238,26 @@ impl Stylesheet {
             filename: filename,
         }
     }
+}
 
-    fn copy(&self, ctx: &PreprocessorContext) {
-        let mut path = ctx.root.clone();
-        assert!(path.exists(), "root directory does not exist");
+impl AdditionalFile for Stylesheet {
+    fn filename(&self) -> &str {
+        &self.filename
+    }
+}
 
-        path.push(self.filename);
+struct CountScript;
 
-        if !cfg!(debug_assertions) && path.exists() {
-            log::info!("CSS file already exists");
-            return;
-        }
+impl CountScript {
+    fn from_context(ctx: &PreprocessorContext) -> Self {
+        assert_eq!(ctx.renderer.as_str(), "html");
 
-        //eprintln!("copy to {:?}", path);
-        let css = Asset::get(self.filename).unwrap();
-        std::fs::write(&path, &css).unwrap();
+        Self
+    }
+}
+
+impl AdditionalFile for CountScript {
+    fn filename(&self) -> &str {
+        "playscript-count.js"
     }
 }
