@@ -86,15 +86,19 @@ impl Counter {
     }
 
     pub fn insert_elements(&self, ignored: &IgnorePatterns, src: Option<&PathBuf>, s: &mut String) {
-        if let Some(src) = src {
-            if ignored.matches_path(src) {
+        let div = match src {
+            Some(src) if ignored.matches_path(src) => {
                 log::info!("Ignore {}",src.display());
-                return;
-            }
+                format!(r#"<div class="mdplayscript-count ignored-holder">Ignored counter</div>"#)
+            },
+            _ => {
+                log::info!("Process {:?}", src);
+                format!(r#"<div class="mdplayscript-count {}"></div>"#, self.class)
+            },
+        };
 
-            log::info!("Process {}", src.display());
-        }
-
-        s.push_str(&format!(r#"<div class="mdplayscript-count {}"></div>"#, self.class));
+        s.push('\n');
+        s.push_str(&div);
+        s.push('\n');
     }
 }
