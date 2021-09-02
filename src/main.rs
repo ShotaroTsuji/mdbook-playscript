@@ -152,11 +152,18 @@ impl PlayScriptPreprocessor {
                     }
 
                     let mut processed = String::with_capacity(len + len/2);
-                    cmark(&mut parser, &mut processed, None).unwrap();
 
-                    if enable_counting {
-                        counter.insert_elements(&ignored, chapter.source_path.as_ref(), &mut processed);
-                    }
+                    let tail = if enable_counting {
+                        counter.generate_placeholder(&ignored, chapter.source_path.as_ref())
+                    } else {
+                        // The placeholder below is inserted before page break div
+                        // elements in `print.html`.
+                        // Safari sets some margin in the top of a page if a div
+                        // element is follwed by the page breaking div element.
+                        // Otherwise, Safari sets no margin.
+                        vec![mdbook_playscript::IgnoredPlaceholder.to_event()]
+                    };
+                    cmark((&mut parser).chain(tail), &mut processed, None).unwrap();
 
                     std::mem::swap(&mut chapter.content, &mut processed);
                 },

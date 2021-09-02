@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use mdplayscript::renderer::HtmlRenderer;
+use pulldown_cmark::Event;
 use rand::Rng;
 
 pub struct IgnorePatterns(Vec<glob::Pattern>);
@@ -85,16 +86,19 @@ impl Counter {
         renderer.speech_classes.add(&self.class);
     }
 
-    pub fn insert_elements(&self, ignored: &IgnorePatterns, src: Option<&PathBuf>, s: &mut String) {
-        if let Some(src) = src {
-            if ignored.matches_path(src) {
+    pub fn generate_placeholder(&self, ignored: &IgnorePatterns, src: Option<&PathBuf>) -> Vec<Event<'static>> {
+        let div = match src {
+            Some(src) if ignored.matches_path(src) => {
                 log::info!("Ignore {}",src.display());
-                return;
-            }
+                crate::IgnoredPlaceholder.to_cow_str()
+            },
+            _ => {
+                log::info!("Process {:?}", src);
+                format!(r#"<div class="mdplayscript-count {}"></div>"#, self.class)
+                    .into()
+            },
+        };
 
-            log::info!("Process {}", src.display());
-        }
-
-        s.push_str(&format!(r#"<div class="mdplayscript-count {}"></div>"#, self.class));
+        vec![Event::Html(div.into())]
     }
 }
