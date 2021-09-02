@@ -156,6 +156,11 @@ impl PlayScriptPreprocessor {
                     let tail = if enable_counting {
                         counter.generate_placeholder(&ignored, chapter.source_path.as_ref())
                     } else {
+                        // The placeholder below is inserted before page break div
+                        // elements in `print.html`.
+                        // Safari sets some margin in the top of a page if a div
+                        // element is follwed by the page breaking div element.
+                        // Otherwise, Safari sets no margin.
                         vec![mdbook_playscript::IgnoredPlaceholder.to_event()]
                     };
                     cmark((&mut parser).chain(tail), &mut processed, None).unwrap();
