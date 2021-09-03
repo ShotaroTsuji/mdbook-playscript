@@ -12,9 +12,12 @@ cargo install mdbook-playscript
 
 ## 使い方
 
-`mdbook init`を実行した後に`book.toml`に以下の記述を追加してください。
+[`mdbook init`](https://rust-lang.github.io/mdBook/cli/init.html)を実行した後に`book.toml`に以下の記述を追加してください。
 その後、`mdbook build`を実行すると拡張した記法を解釈した上でスタイル付けがなされたHTMLが出力されます。
 
+### 日本語
+
+日本語で書かれた戯曲用のスタイルシートを別に用意してあります。
 日本語で戯曲を書く場合は、キー`book.language`の値を`ja`にしてください。
 `mdbook-playscript`は`book.language`の値を元にコピーするCSSファイルを決定します。
 `book.language = "ja"`のときは、`mdbook init`を実行したディレクトリに`mdplayscript_ja.css`をコピーします。
@@ -22,7 +25,17 @@ cargo install mdbook-playscript
 また、`output.html.additional-css`の値を`mdplayscript_ja.css`にする必要があります。
 プリプロセッサがコンフィグを書き換えることはできないので手動で設定しなければなりません。
 
+### ルビ
+
 `book.toml`に`preprocessor.playscript.japanese-ruby.enable: true`を設定することで日本語のテキストにルビを振ることができます。ルビの記法は[`japanese-ruby-filter`のREADME](https://crates.io/crates/japanese-ruby-filter)を参照してください。
+
+### 文字数カウント機能
+
+言語を日本語に設定している場合は、文字数カウント機能を有効化することができます。
+文字数カウント機能を有効にするときは、`book.toml`に`preprocessor.playscript.counting.enable: true`を設定してください。
+また、`output.html.additional-js`の値を`playscript-count.js`にする必要があります。
+
+文字数カウント機能を利用しないファイルを設定することができます。`preprocessor.playscript.counting.ignore`に`src/`から見た相対パスで記述したファイル名のリストを記述してください。
 
 ```toml
 [book]
@@ -35,9 +48,12 @@ title = "（作品のタイトル）"
 [preprocessor.playscript]
 command = "mdbook-playscript"
 japanese-ruby.enable = true
+counting.enable = true
+counting.ignore = ["cover.md"]
 
 [output.html]
 additional-css = ["mdplayscript_ja.css"]
+additional-js = ["playscript-count.js"]
 ```
 
 ## 記法
