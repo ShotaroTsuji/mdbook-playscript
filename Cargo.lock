@@ -845,7 +845,7 @@ dependencies = [
 
 [[package]]
 name = "mdbook-playscript"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "env_logger 0.8.4",
  "glob",
@@ -865,7 +865,8 @@ dependencies = [
 [[package]]
 name = "mdplayscript"
 version = "0.6.0"
-source = "git+https://github.com/ShotaroTsuji/mdplayscript?branch=develop#5e7838d21b8187ecb2d4bd288d2e7d1929a7e562"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd8cd001708ce59f60736e64d3d1a25615e7dedc732577804e57c39b2e210961"
 dependencies = [
  "eyre",
  "mdbook",
@@ -1573,9 +1574,9 @@ checksum = "43b2853a4d09f215c24cc5489c992ce46052d359b5109343cbafbf26bc62f8a3"
 
 [[package]]
 name = "siphasher"
-version = "0.3.6"
+version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "729a25c17d72b06c68cb47955d44fda88ad2d3e7d77e025663fdd69b93dd71a1"
+checksum = "533494a8f9b724d33625ab53c6c4800f7cc445895924a8ef649222dcb76e938b"
 
 [[package]]
 name = "slab"
@@ -1819,9 +1820,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-util"
-version = "0.6.7"
+version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1caa0b0c8d94a049db56b5acf8cba99dc0623aab1b26d5b5f5e2d945846b3592"
+checksum = "08d3725d3efa29485e87311c5b699de63cde14b00ed4d256b8318aa30ca452cd"
 dependencies = [
  "bytes",
  "futures-core",
@@ -1894,9 +1895,9 @@ dependencies = [
 
 [[package]]
 name = "typenum"
-version = "1.13.0"
+version = "1.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "879f6906492a7cd215bfa4cf595b600146ccfac0c79bcbd1f3000162af5e8b06"
+checksum = "b63708a265f51345575b27fe43f9500ad611579e764c79edbc2037b1121959ec"
 
 [[package]]
 name = "ucd-trie"
